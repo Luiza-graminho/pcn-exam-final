@@ -99,6 +99,12 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel9.setText("Database name:");
         jLabel9.setDoubleBuffered(true);
 
+        hostName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hostNameActionPerformed(evt);
+            }
+        });
+
         jLabel10.setText("Port:");
 
         jbLoadXML.setText("Load XML Conf");
@@ -544,27 +550,39 @@ public class MainFrame extends javax.swing.JFrame {
      */
     private void jbLoadXMLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbLoadXMLActionPerformed
 
-        final String CONFIG_FILE_NAME = "config.xml";
+       try {
+            String filename = "config.xml";
+            
+            org.w3c.dom.Document doc = XMLHandler.readXmlFile(filename);
+            
+            if (doc == null) {
+                JOptionPane.showMessageDialog(this, "Erro ao carregar o arquivo config.xml", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        // Insira aqui seu código para implementar a ação do botão "Load XML Conf".
-        // Esse código deve extrair dados do arquivo indicado na contante acima utilizando XPath
-        var xml = XMLHandler.readXmlFile(CONFIG_FILE_NAME);
-        
-        String _username = XMLHandler.getXMLValue(xml, "/config/database/@username");
-        String _password = "";
-        String _hostName = "";
-        String _port = "";
-        String _dbName = "";
-        String _enableTransactions = "";
-        
-        
-        username.setText(_username);
-        
-        password.setText(_password);
-        hostName.setText(_hostName);
-        port.setText(_port);
-        dbName.setText(_dbName);
-        enableTransactions.setText(_enableTransactions);
+            // 2. Extrai os valores utilizando as expressões XPath com '@' para os atributos
+            String xmlHost = XMLHandler.getXMLValue(doc, "/config/database/@host-name");
+            String xmlPort = XMLHandler.getXMLValue(doc, "/config/database/@port");
+            String xmlDbName = XMLHandler.getXMLValue(doc, "/config/database/@db-name");
+            String xmlUsername = XMLHandler.getXMLValue(doc, "/config/database/@username");
+            String xmlPassword = XMLHandler.getXMLValue(doc, "/config/database/@password");
+            String xmlTransactions = XMLHandler.getXMLValue(doc, "/config/database/@enable-transactions");
+
+            // 3. Preenche automaticamente os JTextFields/JPasswordFields da tela usando os nomes exatos do seu código
+            hostName.setText(xmlHost);
+            port.setText(xmlPort);
+            dbName.setText(xmlDbName);
+            username.setText(xmlUsername);
+            password.setText(xmlPassword);
+            enableTransactions.setText(xmlTransactions);
+
+            // Ativa o painel principal se necessário, ou exibe uma mensagem de sucesso
+            JOptionPane.showMessageDialog(this, "Configurações do XML carregadas com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao processar as configurações: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jbLoadXMLActionPerformed
 
 
@@ -575,9 +593,12 @@ public class MainFrame extends javax.swing.JFrame {
         // Siga aqui seu código
     }//GEN-LAST:event_jbFindIsolationIndexActionPerformed
 
+    private void hostNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hostNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_hostNameActionPerformed
     
     
-    
+
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

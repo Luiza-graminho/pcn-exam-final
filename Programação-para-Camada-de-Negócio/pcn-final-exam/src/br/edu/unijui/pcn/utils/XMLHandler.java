@@ -106,10 +106,9 @@ public class XMLHandler {
         }
     }
 
-    // Transformar um objeto Document em um arquivo texto XML
+   // Transformar um objeto Document em um arquivo texto XML
     public static void writeXmlFile(Document doc, String filename) {
         try {
-
             Source source = new DOMSource(doc);
             File file = new File(filename);
             Result result = new StreamResult(file);
@@ -117,17 +116,21 @@ public class XMLHandler {
             Transformer xformer = TransformerFactory.newInstance().newTransformer();
             xformer.setOutputProperty(OutputKeys.INDENT, "yes");
             xformer.transform(source, result);
-
         } catch (TransformerException | TransformerFactoryConfigurationError ex) {
             System.out.println(ex);
-        }
-    }
+        } // <- Fecha o catch
+    } // <- FECHA O MÉTODO writeXmlFile (Faltava essa!)
     
-    public static String getXMLValue(Document doc, String xpath){
-        try{
+    // Buscar o valor de uma tag ou atributo usando XPath
+    public static String getXMLValue(Document doc, String xpath) {
+        try {
             XPathExpression exp = XMLHandler.getXPathExpression(xpath);
-            return (String) exp.evaluate(doc, XPathConstants.STRING);
-        } catch (XPathExpressionException ex){
+            if (exp == null) {
+                return null;
+            }
+            // Retorna o resultado diretamente como uma String avaliada pelo XPath
+            return exp.evaluate(doc); 
+        } catch (XPathExpressionException ex) {
             ex.printStackTrace();
             return null;
         }
