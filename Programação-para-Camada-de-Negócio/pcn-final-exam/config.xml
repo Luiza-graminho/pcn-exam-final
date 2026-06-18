@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   
+    <database username = "app" 
+              password = "app"
+              host-name = "localhost" 
+              port = "1527" 
+              db-name = "sample" 
+              enable-transactions = "yes"
+    />
+    
+    <log enable = "yes"
+         format = "simple"
+         file-name = "system.log"
+         append = "yes"
+         print-console = "yes"
+    />
+    
+</config>
+
+
+
