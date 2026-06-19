@@ -492,10 +492,41 @@ public class MainFrame extends javax.swing.JFrame {
             return;
         }
         
-        // Instancie o DBManager passando os respectivos parâmetros para o seu construtor
-        DBManager db = null;
+        if (records == null || records.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No records loaded from CSV to insert.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         
-        db.insertAll(records);
+        try {
+            String host = hostName.getText();
+            int portNum = Integer.parseInt(port.getText());
+            String db = dbName.getText();
+            String user = username.getText();
+            String pass = new String(password.getPassword());
+            boolean useTransactions = enableTransactions.getText().equalsIgnoreCase("yes");
+
+            DBManager dbManager = new DBManager(host, portNum, db, user, pass);
+            
+            if (useTransactions) {
+                dbManager.setAutoCommit(false);
+            } else {
+                dbManager.setAutoCommit(true);
+            }
+
+            dbManager.insertAll(records);
+
+            if (useTransactions) {
+                dbManager.commit();
+            }
+
+            JOptionPane.showMessageDialog(this, "All records inserted into database successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid port number field.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Database error during execution: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
 
     }//GEN-LAST:event_jbRunSystemActionPerformed
 
@@ -522,25 +553,39 @@ public class MainFrame extends javax.swing.JFrame {
             
             selectedFilesJList.setModel(model);
             
+            // Chama a camada de negócio que implementamos com Threads no Passo 1
             records = IsolationCSVImporter.load(selectedFiles);
 
-            // esta variável armazenará os estados de modo que cada estado armazena uma lista de cidades cujos nomes não se repetem
-            Map<String, Set<String>> data = new HashMap();
+            // Mapa para extrair estados e suas respectivas cidades de forma única
+            Map<String, Set<String>> data = new HashMap<>();
             
-            // as variáveis _numberOfCities e _numberStates devem receber o número total de cidades e o número total de estados
-            // utilize uma estratégia para obter estes dados a partir do mapa "data" declarado logo acima
+            for (IsolationRecord r : records) {
+                // Se o estado não existe no mapa, adiciona um novo HashSet para ele
+                data.putIfAbsent(r.state(), new HashSet<>());
+                // Adiciona o nome da cidade no conjunto do respectivo estado (evita duplicatas automaticamente)
+                data.get(r.state()).add(r.city());
+            }
             
-            int _numberOfCities = 0; 
-            int _numberStates = 0;
+            // Calcula o número total de estados únicos (tamanho das chaves do mapa)
+            int _numberStates = data.size();
             
+            // Calcula o número total de cidades únicas somando o tamanho dos Sets de cada estado
+            int _numberOfCities = 0;
+            for (Set<String> cities : data.values()) {
+                _numberOfCities += cities.size();
+            }
+            
+            // Preenche os componentes na tela
             totalRegisters.setText(String.valueOf(records.size()));
             numberCities.setText(String.valueOf(_numberOfCities));
             numberStates.setText(String.valueOf(_numberStates));
-            
-            // habilita o botão de execução da operação de inserção dos dados no banco de dados.
+
+            // Habilita o botão de rodar o sistema conforme o PDF exige
             jbRunSystem.setEnabled(true);
-        } catch (InterruptedException ex) {
-            System.getLogger(MainFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao carregar arquivos CSV: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_jbInputFileButtonActionPerformed
