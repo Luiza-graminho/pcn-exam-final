@@ -37,7 +37,7 @@ public class DBManager {
 
         return DriverManager.getConnection(url, username, password);
     }
-    
+
     public void setAutoCommit(boolean status) throws SQLException {
         if (activeConnection == null || activeConnection.isClosed()) {
             activeConnection = openConnection();
@@ -55,7 +55,7 @@ public class DBManager {
     public void insertAll(List<IsolationRecord> records) {
         Connection conn = null;
         PreparedStatement stmtIso = null;
-        
+
         try {
             if (activeConnection != null && !activeConnection.isClosed()) {
                 conn = activeConnection;
@@ -74,7 +74,7 @@ public class DBManager {
                 stmtIso.setLong(2, stateId);
                 stmtIso.setDouble(3, record.index());
                 stmtIso.setString(4, record.date());
-                
+
                 stmtIso.executeUpdate();
             }
 
@@ -86,14 +86,19 @@ public class DBManager {
             e.printStackTrace();
             throw new RuntimeException("Erro ao inserir em lote: " + e.getMessage(), e);
         } finally {
-            try { if (stmtIso != null) stmtIso.close(); } catch (SQLException e) {}
+            try {
+                if (stmtIso != null) {
+                    stmtIso.close();
+                }
+            } catch (SQLException e) {
+            }
         }
     }
-    
+
     private Long getOrInsertState(Connection conn, IsolationRecord record) throws SQLException {
         String selectSql = "SELECT ID FROM STATE WHERE NAME = ?";
         String insertSql = "INSERT INTO STATE (NAME, ACRONYM) VALUES (?, ?)";
-        
+
         try (PreparedStatement selectStmt = conn.prepareStatement(selectSql)) {
             selectStmt.setString(1, record.state());
             try (ResultSet rs = selectStmt.executeQuery()) {
@@ -102,12 +107,12 @@ public class DBManager {
                 }
             }
         }
-        
+
         try (PreparedStatement insertStmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
             insertStmt.setString(1, record.state());
-            insertStmt.setString(2, record.stateAcronym()); 
+            insertStmt.setString(2, record.stateAcronym());
             insertStmt.executeUpdate();
-            
+
             try (ResultSet generatedKeys = insertStmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     return generatedKeys.getLong(1);
@@ -116,18 +121,202 @@ public class DBManager {
         }
         return 0L;
     }
-    
+
     public Long getOrInsertState(IsolationRecord record) throws SQLException {
         try (Connection conn = openConnection()) {
             return getOrInsertState(conn, record);
         }
     }
-    
+
     public IsolationRecord findTheHighest(String whereToFind) {
+
+        try (Connection conn = openConnection()) {
+
+            String sql;
+
+            if (whereToFind.equals("Brazil")) {
+
+                sql = """
+                  SELECT s.NAME,
+                         s.ACRONYM,
+                         si.CITY,
+                         si."INDEX",
+                         si.DATE_WHEN
+                  FROM SOCIAL_ISOLATION si
+                  JOIN STATE s ON s.ID = si.STATE_ID
+                  ORDER BY si.INDEX DESC
+                  FETCH FIRST 1 ROW ONLY
+                  """;
+
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    return new IsolationRecord(
+                            rs.getString("NAME"),
+                            rs.getString("ACRONYM"),
+                            rs.getString("CITY"),
+                            rs.getDouble("INDEX"),
+                            rs.getString("DATE_WHEN")
+                    );
+                }
+
+            } else {
+
+                String acronym = whereToFind.substring(
+                        whereToFind.indexOf("(") + 1,
+                        whereToFind.indexOf(")")
+                );
+
+                sql = """
+                  SELECT s.NAME,
+                         s.ACRONYM,
+                         si.CITY,
+                         si."INDEX",
+                         si.DATE_WHEN
+                  FROM SOCIAL_ISOLATION si
+                  JOIN STATE s ON s.ID = si.STATE_ID
+                  WHERE s.ACRONYM = ?
+                  ORDER BY si.INDEX DESC
+                  FETCH FIRST 1 ROW ONLY
+                  """;
+
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, acronym);
+
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    return new IsolationRecord(
+                            rs.getString("NAME"),
+                            rs.getString("ACRONYM"),
+                            rs.getString("CITY"),
+                            rs.getDouble("INDEX"),
+                            rs.getString("DATE_WHEN")
+                    );
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
-    
+
     public IsolationRecord findTheLowest(String whereToFind) {
+
+        try (Connection conn = openConnection()) {
+
+            String sql;
+
+            if (whereToFind.equals("Brazil")) {
+
+                sql = """
+                  SELECT s.NAME,
+                         s.ACRONYM,
+                         si.CITY,
+                         si."INDEX",
+                         si.DATE_WHEN
+                  FROM SOCIAL_ISOLATION si
+                  JOIN STATE s ON s.ID = si.STATE_ID
+                  ORDER BY si.INDEX ASC
+                  FETCH FIRST 1 ROW ONLY
+                  """;
+
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    return new IsolationRecord(
+                            rs.getString("NAME"),
+                            rs.getString("ACRONYM"),
+                            rs.getString("CITY"),
+                            rs.getDouble("INDEX"),
+                            rs.getString("DATE_WHEN")
+                    );
+                }
+
+            } else {
+
+                String acronym = whereToFind.substring(
+                        whereToFind.indexOf("(") + 1,
+                        whereToFind.indexOf(")")
+                );
+
+                sql = """
+                  SELECT s.NAME,
+                         s.ACRONYM,
+                         si.CITY,
+                         si."INDEX",
+                         si.DATE_WHEN
+                  FROM SOCIAL_ISOLATION si
+                  JOIN STATE s ON s.ID = si.STATE_ID
+                  WHERE s.ACRONYM = ?
+                  ORDER BY si.INDEX ASC
+                  FETCH FIRST 1 ROW ONLY
+                  """;
+
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, acronym);
+
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    return new IsolationRecord(
+                            rs.getString("NAME"),
+                            rs.getString("ACRONYM"),
+                            rs.getString("CITY"),
+                            rs.getDouble("INDEX"),
+                            rs.getString("DATE_WHEN")
+                    );
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return null;
+    }
+
+    public List<IsolationRecord> getAllRecords() {
+
+        List<IsolationRecord> records = new java.util.ArrayList<>();
+
+        String sql = """
+        SELECT
+            s.NAME,
+            s.ACRONYM,
+            si.CITY,
+            si."INDEX",
+            si.DATE_WHEN
+        FROM SOCIAL_ISOLATION si
+        INNER JOIN STATE s
+            ON s.ID = si.STATE_ID
+        ORDER BY si.CITY ASC
+    """;
+
+        try (
+                Connection conn = openConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+
+                records.add(
+                        new IsolationRecord(
+                                rs.getString("NAME"),
+                                rs.getString("ACRONYM"),
+                                rs.getString("CITY"),
+                                rs.getDouble("INDEX"),
+                                rs.getString("DATE_WHEN")
+                        )
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return records;
     }
 }

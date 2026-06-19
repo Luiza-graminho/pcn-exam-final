@@ -3,6 +3,7 @@ package br.edu.unijui.gui;
 import br.edu.unijui.pcn.logic.DBManager;
 import br.edu.unijui.pcn.logic.IsolationCSVImporter;
 import br.edu.unijui.pcn.logic.IsolationRecord;
+import br.edu.unijui.pcn.logic.XMLTransformer;
 import br.edu.unijui.pcn.utils.XMLHandler;
 import java.io.File;
 import java.util.ArrayList;
@@ -15,16 +16,16 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-
 /**
- * Interface implementada parcialmente pelo professor. 
- * Siga as instruções da avaliação para construir seu programa completo.
+ * Interface implementada parcialmente pelo professor. Siga as instruções da
+ * avaliação para construir seu programa completo.
+ *
  * @author Rafael Zancan Frantz
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    public MainFrame() {        
-        initComponents();    
+    public MainFrame() {
+        initComponents();
         setLocationRelativeTo(this);
     }
 
@@ -475,7 +476,38 @@ public class MainFrame extends javax.swing.JFrame {
 
         final String XML_FILE_NAME = xmlOutputFileName.getText(); // Essa variável contém o nome do arquivo ao qual deve ser exportado o XML
 
-        // Siga aqui seu código
+        try {
+
+            DBManager db = new DBManager(
+                    hostName.getText(),
+                    Integer.parseInt(port.getText()),
+                    dbName.getText(),
+                    username.getText(),
+                    new String(password.getPassword())
+            );
+
+            XMLTransformer transformer = new XMLTransformer(db);
+
+            transformer.export(XML_FILE_NAME);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Arquivo XML exportado com sucesso!",
+                    "Sucesso",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Erro ao exportar XML: " + e.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
 
     }//GEN-LAST:event_jbExportActionPerformed
 
@@ -483,20 +515,20 @@ public class MainFrame extends javax.swing.JFrame {
      * IMPLEMENTA A AÇÃO DO BOTÃO "RUN SYSTEM DATABASE LOAD"
      */
     private void jbRunSystemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbRunSystemActionPerformed
-        if (dbName.getText().isEmpty() ||
-            port.getText().isEmpty() ||
-            hostName.getText().isEmpty() ||
-            username.getText().isEmpty() ||
-            enableTransactions.getText().isEmpty()) {
+        if (dbName.getText().isEmpty()
+                || port.getText().isEmpty()
+                || hostName.getText().isEmpty()
+                || username.getText().isEmpty()
+                || enableTransactions.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please, first load the XML config", "Information", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        
+
         if (records == null || records.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No records loaded from CSV to insert.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         try {
             String host = hostName.getText();
             int portNum = Integer.parseInt(port.getText());
@@ -506,7 +538,7 @@ public class MainFrame extends javax.swing.JFrame {
             boolean useTransactions = enableTransactions.getText().equalsIgnoreCase("yes");
 
             DBManager dbManager = new DBManager(host, portNum, db, user, pass);
-            
+
             if (useTransactions) {
                 dbManager.setAutoCommit(false);
             } else {
@@ -531,50 +563,50 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jbRunSystemActionPerformed
 
     /**
-     * MÉTODO IMPLEMENTADO PARA VOCÊ
-     * ESSE MÉTODO IMPLEMENTA A AÇÃO DO BOTÃO "SELECT..."
+     * MÉTODO IMPLEMENTADO PARA VOCÊ ESSE MÉTODO IMPLEMENTA A AÇÃO DO BOTÃO
+     * "SELECT..."
      */
     private void jbInputFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbInputFileButtonActionPerformed
 
         try {
             fileChooser.setMultiSelectionEnabled(true);
             int result = fileChooser.showOpenDialog(this);
-            
+
             if (result == JFileChooser.CANCEL_OPTION) {
                 return;
             }
-            
+
             selectedFiles = fileChooser.getSelectedFiles();
             DefaultListModel<String> model = new DefaultListModel<>();
-            
+
             for (File file : selectedFiles) {
                 model.addElement(file.getName());
             }
-            
+
             selectedFilesJList.setModel(model);
-            
+
             // Chama a camada de negócio que implementamos com Threads no Passo 1
             records = IsolationCSVImporter.load(selectedFiles);
 
             // Mapa para extrair estados e suas respectivas cidades de forma única
             Map<String, Set<String>> data = new HashMap<>();
-            
+
             for (IsolationRecord r : records) {
                 // Se o estado não existe no mapa, adiciona um novo HashSet para ele
                 data.putIfAbsent(r.state(), new HashSet<>());
                 // Adiciona o nome da cidade no conjunto do respectivo estado (evita duplicatas automaticamente)
                 data.get(r.state()).add(r.city());
             }
-            
+
             // Calcula o número total de estados únicos (tamanho das chaves do mapa)
             int _numberStates = data.size();
-            
+
             // Calcula o número total de cidades únicas somando o tamanho dos Sets de cada estado
             int _numberOfCities = 0;
             for (Set<String> cities : data.values()) {
                 _numberOfCities += cities.size();
             }
-            
+
             // Preenche os componentes na tela
             totalRegisters.setText(String.valueOf(records.size()));
             numberCities.setText(String.valueOf(_numberOfCities));
@@ -591,15 +623,15 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jbInputFileButtonActionPerformed
 
     /**
-     * IMPLEMENTA A AÇÃO DO BOTÃO "LOAD XML CONF"   
+     * IMPLEMENTA A AÇÃO DO BOTÃO "LOAD XML CONF"
      */
     private void jbLoadXMLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbLoadXMLActionPerformed
 
-       try {
-            String CONFIG_FILE_NAME  = "config.xml";
-            
-            org.w3c.dom.Document doc = XMLHandler.readXmlFile(CONFIG_FILE_NAME );
-            
+        try {
+            String CONFIG_FILE_NAME = "config.xml";
+
+            org.w3c.dom.Document doc = XMLHandler.readXmlFile(CONFIG_FILE_NAME);
+
             if (doc == null) {
                 JOptionPane.showMessageDialog(this, "Erro ao carregar o arquivo config.xml", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -634,15 +666,51 @@ public class MainFrame extends javax.swing.JFrame {
 
         final String WHERE_TO_FIND = jcbWhereToFind.getSelectedItem().toString(); // Essa variável contém o nome e a sigla do estado selecionado
 
-        // Siga aqui seu código
+        try {
+
+            DBManager db = new DBManager(
+                    hostName.getText(),
+                    Integer.parseInt(port.getText()),
+                    dbName.getText(),
+                    username.getText(),
+                    new String(password.getPassword())
+            );
+
+            IsolationRecord highest = db.findTheHighest(WHERE_TO_FIND);
+            IsolationRecord lowest = db.findTheLowest(WHERE_TO_FIND);
+
+            if (highest != null) {
+
+                highestIsolationIndex.setText(
+                        highest.city()
+                        + " (" + highest.date() + ") -> "
+                        + highest.index() + "%"
+                );
+            }
+
+            if (lowest != null) {
+
+                lowestIsolationIndex.setText(
+                        lowest.city()
+                        + " (" + lowest.date() + ") -> "
+                        + lowest.index() + "%"
+                );
+            }
+
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    e.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//GEN-LAST:event_jbFindIsolationIndexActionPerformed
 
     private void hostNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hostNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_hostNameActionPerformed
-    
-    
-
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -726,5 +794,5 @@ public class MainFrame extends javax.swing.JFrame {
 
     private File[] selectedFiles;
     private List<IsolationRecord> records = new ArrayList();
-    
+
 }
