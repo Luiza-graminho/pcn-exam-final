@@ -2,7 +2,7 @@ package br.edu.unijui.pcn.logic;
 
 /**
  *
- * @author <>
+ * @author Isadora Beckmann e Luiza Graminho
  */
 public record IsolationRecord(
     String state,

@@ -4,7 +4,7 @@ package br.edu.unijui.pcn.logic;
 /**
  * Esta classe implementa a lógica de negócio para ler e gerar um arquivo XML 
  * com os dados de isolamento social.
- * @author <seu nome aqui>
+ * @author Isadora Beckmann e Luiza Graminho
  */
 public class XMLTransformer {
 

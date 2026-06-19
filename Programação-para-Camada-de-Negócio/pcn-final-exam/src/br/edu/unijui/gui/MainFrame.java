@@ -551,16 +551,16 @@ public class MainFrame extends javax.swing.JFrame {
     private void jbLoadXMLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbLoadXMLActionPerformed
 
        try {
-            String filename = "config.xml";
+            String CONFIG_FILE_NAME  = "config.xml";
             
-            org.w3c.dom.Document doc = XMLHandler.readXmlFile(filename);
+            org.w3c.dom.Document doc = XMLHandler.readXmlFile(CONFIG_FILE_NAME );
             
             if (doc == null) {
                 JOptionPane.showMessageDialog(this, "Erro ao carregar o arquivo config.xml", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // 2. Extrai os valores utilizando as expressões XPath com '@' para os atributos
+            // extrai os valores utilizando as expressões XPath com '@' para os atributos
             String xmlHost = XMLHandler.getXMLValue(doc, "/config/database/@host-name");
             String xmlPort = XMLHandler.getXMLValue(doc, "/config/database/@port");
             String xmlDbName = XMLHandler.getXMLValue(doc, "/config/database/@db-name");
@@ -568,7 +568,7 @@ public class MainFrame extends javax.swing.JFrame {
             String xmlPassword = XMLHandler.getXMLValue(doc, "/config/database/@password");
             String xmlTransactions = XMLHandler.getXMLValue(doc, "/config/database/@enable-transactions");
 
-            // 3. Preenche automaticamente os JTextFields/JPasswordFields da tela usando os nomes exatos do seu código
+            // preenche automaticamente os JTextFields/JPasswordFields da tela 
             hostName.setText(xmlHost);
             port.setText(xmlPort);
             dbName.setText(xmlDbName);
@@ -576,7 +576,6 @@ public class MainFrame extends javax.swing.JFrame {
             password.setText(xmlPassword);
             enableTransactions.setText(xmlTransactions);
 
-            // Ativa o painel principal se necessário, ou exibe uma mensagem de sucesso
             JOptionPane.showMessageDialog(this, "Configurações do XML carregadas com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception e) {

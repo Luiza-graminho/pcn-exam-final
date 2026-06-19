@@ -118,8 +118,8 @@ public class XMLHandler {
             xformer.transform(source, result);
         } catch (TransformerException | TransformerFactoryConfigurationError ex) {
             System.out.println(ex);
-        } // <- Fecha o catch
-    } // <- FECHA O MÉTODO writeXmlFile (Faltava essa!)
+        }
+    }
     
     // Buscar o valor de uma tag ou atributo usando XPath
     public static String getXMLValue(Document doc, String xpath) {

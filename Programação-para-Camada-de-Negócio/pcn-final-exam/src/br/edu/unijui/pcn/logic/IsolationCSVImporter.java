@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ *
+ * @author Isadora Beckmann e Luiza Graminho
+ */
+
 public class IsolationCSVImporter {
     public static List<IsolationRecord> load(File[] files) throws InterruptedException {
         List<IsolationRecord> records = Collections.synchronizedList(new ArrayList<>());
