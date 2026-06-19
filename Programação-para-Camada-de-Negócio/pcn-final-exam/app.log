@@ -1,0 +1,145 @@
+jun. 19, 2026 5:02:57 PM br.edu.unijui.gui.MainFrame jbInputFileButtonActionPerformed
+INFORMAÇÕES: Usuário selecionou 1 arquivo(s) CSV
+jun. 19, 2026 5:03:14 PM br.edu.unijui.pcn.logic.DBManager findTheHighest
+INFORMAÇÕES: Buscando maior índice de isolamento para: Brazil
+jun. 19, 2026 5:03:14 PM br.edu.unijui.pcn.logic.DBManager openConnection
+INFORMAÇÕES: Tentando conectar ao banco: jdbc:derby://localhost:1527/sample
+jun. 19, 2026 5:03:14 PM br.edu.unijui.pcn.logic.DBManager openConnection
+ADVERTÊNCIA: Driver Derby não carregado explicitamente. Tentando conexão via DriverManager.
+jun. 19, 2026 5:03:14 PM br.edu.unijui.pcn.logic.DBManager openConnection
+INFORMAÇÕES: Conexão com banco estabelecida com sucesso
+jun. 19, 2026 5:03:14 PM br.edu.unijui.pcn.logic.DBManager findTheHighest
+ADVERTÊNCIA: Erro ao buscar maior índice de isolamento
+java.sql.SQLException: No suitable driver found for jdbc:derby://localhost:1527/sample
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at br.edu.unijui.pcn.logic.DBManager.openConnection(DBManager.java:50)
+	at br.edu.unijui.pcn.logic.DBManager.findTheHighest(DBManager.java:180)
+	at br.edu.unijui.gui.MainFrame.jbFindIsolationIndexActionPerformed(MainFrame.java:707)
+	at br.edu.unijui.gui.MainFrame$5.actionPerformed(MainFrame.java:308)
+	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
+	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2314)
+	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:407)
+	at java.desktop/javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:262)
+	at java.desktop/javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:279)
+	at java.desktop/java.awt.Component.processMouseEvent(Component.java:6576)
+	at java.desktop/javax.swing.JComponent.processMouseEvent(JComponent.java:3404)
+	at java.desktop/java.awt.Component.processEvent(Component.java:6341)
+	at java.desktop/java.awt.Container.processEvent(Container.java:2260)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:4958)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2318)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4917)
+	at java.desktop/java.awt.LightweightDispatcher.processMouseEvent(Container.java:4560)
+	at java.desktop/java.awt.LightweightDispatcher.dispatchEvent(Container.java:4501)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2304)
+	at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2671)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:725)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:702)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+
+jun. 19, 2026 5:03:14 PM br.edu.unijui.pcn.logic.DBManager findTheLowest
+INFORMAÇÕES: Buscando menor índice de isolamento para: Brazil
+jun. 19, 2026 5:03:14 PM br.edu.unijui.pcn.logic.DBManager openConnection
+INFORMAÇÕES: Tentando conectar ao banco: jdbc:derby://localhost:1527/sample
+jun. 19, 2026 5:03:14 PM br.edu.unijui.pcn.logic.DBManager openConnection
+ADVERTÊNCIA: Driver Derby não carregado explicitamente. Tentando conexão via DriverManager.
+jun. 19, 2026 5:03:14 PM br.edu.unijui.pcn.logic.DBManager openConnection
+INFORMAÇÕES: Conexão com banco estabelecida com sucesso
+jun. 19, 2026 5:03:14 PM br.edu.unijui.pcn.logic.DBManager findTheLowest
+ADVERTÊNCIA: Erro ao buscar menor índice de isolamento
+java.sql.SQLException: No suitable driver found for jdbc:derby://localhost:1527/sample
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at br.edu.unijui.pcn.logic.DBManager.openConnection(DBManager.java:50)
+	at br.edu.unijui.pcn.logic.DBManager.findTheLowest(DBManager.java:270)
+	at br.edu.unijui.gui.MainFrame.jbFindIsolationIndexActionPerformed(MainFrame.java:708)
+	at br.edu.unijui.gui.MainFrame$5.actionPerformed(MainFrame.java:308)
+	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
+	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2314)
+	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:407)
+	at java.desktop/javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:262)
+	at java.desktop/javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:279)
+	at java.desktop/java.awt.Component.processMouseEvent(Component.java:6576)
+	at java.desktop/javax.swing.JComponent.processMouseEvent(JComponent.java:3404)
+	at java.desktop/java.awt.Component.processEvent(Component.java:6341)
+	at java.desktop/java.awt.Container.processEvent(Container.java:2260)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:4958)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2318)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4917)
+	at java.desktop/java.awt.LightweightDispatcher.processMouseEvent(Container.java:4560)
+	at java.desktop/java.awt.LightweightDispatcher.dispatchEvent(Container.java:4501)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2304)
+	at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2671)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:725)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:702)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+
+jun. 19, 2026 5:03:14 PM br.edu.unijui.gui.MainFrame jbFindIsolationIndexActionPerformed
+INFORMAÇÕES: Consulta realizada com sucesso
+jun. 19, 2026 5:03:22 PM br.edu.unijui.gui.MainFrame jbExportActionPerformed
+INFORMAÇÕES: Iniciando exportação XML para isolamento
+jun. 19, 2026 5:03:22 PM br.edu.unijui.pcn.logic.DBManager getAllRecords
+INFORMAÇÕES: Iniciando recuperação de registros do banco
+jun. 19, 2026 5:03:22 PM br.edu.unijui.pcn.logic.DBManager openConnection
+INFORMAÇÕES: Tentando conectar ao banco: jdbc:derby://localhost:1527/sample
+jun. 19, 2026 5:03:22 PM br.edu.unijui.pcn.logic.DBManager openConnection
+ADVERTÊNCIA: Driver Derby não carregado explicitamente. Tentando conexão via DriverManager.
+jun. 19, 2026 5:03:22 PM br.edu.unijui.pcn.logic.DBManager openConnection
+INFORMAÇÕES: Conexão com banco estabelecida com sucesso
+jun. 19, 2026 5:03:22 PM br.edu.unijui.pcn.logic.DBManager getAllRecords
+ADVERTÊNCIA: Erro ao recuperar registros do banco
+java.sql.SQLException: No suitable driver found for jdbc:derby://localhost:1527/sample
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:638)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at br.edu.unijui.pcn.logic.DBManager.openConnection(DBManager.java:50)
+	at br.edu.unijui.pcn.logic.DBManager.getAllRecords(DBManager.java:378)
+	at br.edu.unijui.pcn.logic.XMLTransformer.export(XMLTransformer.java:31)
+	at br.edu.unijui.gui.MainFrame.jbExportActionPerformed(MainFrame.java:507)
+	at br.edu.unijui.gui.MainFrame$6.actionPerformed(MainFrame.java:370)
+	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
+	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2314)
+	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:407)
+	at java.desktop/javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:262)
+	at java.desktop/javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:279)
+	at java.desktop/java.awt.Component.processMouseEvent(Component.java:6576)
+	at java.desktop/javax.swing.JComponent.processMouseEvent(JComponent.java:3404)
+	at java.desktop/java.awt.Component.processEvent(Component.java:6341)
+	at java.desktop/java.awt.Container.processEvent(Container.java:2260)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:4958)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2318)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4917)
+	at java.desktop/java.awt.LightweightDispatcher.processMouseEvent(Container.java:4560)
+	at java.desktop/java.awt.LightweightDispatcher.dispatchEvent(Container.java:4501)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2304)
+	at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2671)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:725)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:702)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+
+jun. 19, 2026 5:03:23 PM br.edu.unijui.gui.MainFrame jbExportActionPerformed
+INFORMAÇÕES: Arquivo XML exportado com sucesso
+jun. 19, 2026 5:03:25 PM br.edu.unijui.gui.MainFrame jbExitActionPerformed
+INFORMAÇÕES: Carregando configurações do arquivo config.xml
+jun. 19, 2026 5:03:26 PM br.edu.unijui.gui.MainFrame jbExitActionPerformed
+INFORMAÇÕES: Configurações carregadas com sucesso

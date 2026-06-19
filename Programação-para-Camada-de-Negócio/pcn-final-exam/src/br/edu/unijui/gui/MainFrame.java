@@ -1,17 +1,20 @@
 package br.edu.unijui.gui;
 
+import br.edu.unijui.logger.AppLogger;
 import br.edu.unijui.pcn.logic.DBManager;
 import br.edu.unijui.pcn.logic.IsolationCSVImporter;
 import br.edu.unijui.pcn.logic.IsolationRecord;
 import br.edu.unijui.pcn.logic.XMLTransformer;
 import br.edu.unijui.pcn.utils.XMLHandler;
 import java.io.File;
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -23,10 +26,15 @@ import javax.swing.JOptionPane;
  * @author Rafael Zancan Frantz
  */
 public class MainFrame extends javax.swing.JFrame {
+    
+     private static final Logger logger
+            = Logger.getLogger(DBManager.class.getName());
 
     public MainFrame() {
         initComponents();
         setLocationRelativeTo(this);
+        
+        AppLogger.init();
     }
 
     /**
@@ -463,9 +471,14 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbExitActionPerformed
+        
+        logger.info("Carregando configurações do arquivo config.xml");
         int r = JOptionPane.showConfirmDialog(this, "Do you really want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
         if (r == JOptionPane.YES_OPTION) {
+            logger.info("Configurações carregadas com sucesso");
             System.exit(0);
+        } else {
+            logger.log(Level.WARNING,"Não foi possível carregar as informações",e);
         }
     }//GEN-LAST:event_jbExitActionPerformed
 
@@ -475,7 +488,10 @@ public class MainFrame extends javax.swing.JFrame {
     private void jbExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbExportActionPerformed
 
         final String XML_FILE_NAME = xmlOutputFileName.getText(); // Essa variável contém o nome do arquivo ao qual deve ser exportado o XML
-
+       
+        logger.info("Iniciando exportação XML para "
+            + XML_FILE_NAME);
+        
         try {
 
             DBManager db = new DBManager(
@@ -496,6 +512,8 @@ public class MainFrame extends javax.swing.JFrame {
                     "Sucesso",
                     JOptionPane.INFORMATION_MESSAGE
             );
+            
+            logger.info("Arquivo XML exportado com sucesso");
 
         } catch (Exception e) {
 
@@ -507,6 +525,9 @@ public class MainFrame extends javax.swing.JFrame {
                     "Erro",
                     JOptionPane.ERROR_MESSAGE
             );
+            logger.log(Level.WARNING,
+          "Erro durante exportação XML",
+          e);
         }
 
     }//GEN-LAST:event_jbExportActionPerformed
@@ -552,12 +573,15 @@ public class MainFrame extends javax.swing.JFrame {
             }
 
             JOptionPane.showMessageDialog(this, "All records inserted into database successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
+            logger.info(records.size() + " registros inseridos com sucesso");
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid port number field.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Database error during execution: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            logger.log(Level.WARNING,
+          "Erro durante inserção no banco",
+          e);
         }
 
     }//GEN-LAST:event_jbRunSystemActionPerformed
@@ -614,6 +638,10 @@ public class MainFrame extends javax.swing.JFrame {
 
             // Habilita o botão de rodar o sistema conforme o PDF exige
             jbRunSystem.setEnabled(true);
+            
+            logger.info("Usuário selecionou "
+           + selectedFiles.length
+           + " arquivo(s) CSV");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -696,9 +724,11 @@ public class MainFrame extends javax.swing.JFrame {
                         + lowest.index() + "%"
                 );
             }
-
+            logger.info("Consulta realizada com sucesso");
         } catch (Exception e) {
-
+            logger.log(Level.WARNING,
+          "Erro durante consulta de isolamento",
+          e);
             JOptionPane.showMessageDialog(
                     this,
                     e.getMessage(),
@@ -742,6 +772,8 @@ public class MainFrame extends javax.swing.JFrame {
                 new MainFrame().setVisible(true);
             }
         });
+        
+        
 
     }
 
