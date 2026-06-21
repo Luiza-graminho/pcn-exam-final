@@ -608,40 +608,27 @@ public class MainFrame extends javax.swing.JFrame {
             }
 
             selectedFilesJList.setModel(model);
-
-            // Chama a camada de negócio que implementamos com Threads no Passo 1
+            
             records = IsolationCSVImporter.load(selectedFiles);
 
-            // Mapa para extrair estados e suas respectivas cidades de forma única
-            Map<String, Set<String>> data = new HashMap<>();
-
-            for (IsolationRecord r : records) {
-                // Se o estado não existe no mapa, adiciona um novo HashSet para ele
-                data.putIfAbsent(r.state(), new HashSet<>());
-                // Adiciona o nome da cidade no conjunto do respectivo estado (evita duplicatas automaticamente)
-                data.get(r.state()).add(r.city());
-            }
-
-            // Calcula o número total de estados únicos (tamanho das chaves do mapa)
-            int _numberStates = data.size();
-
-            // Calcula o número total de cidades únicas somando o tamanho dos Sets de cada estado
-            int _numberOfCities = 0;
-            for (Set<String> cities : data.values()) {
-                _numberOfCities += cities.size();
-            }
-
-            // Preenche os componentes na tela
-            totalRegisters.setText(String.valueOf(records.size()));
-            numberCities.setText(String.valueOf(_numberOfCities));
-            numberStates.setText(String.valueOf(_numberStates));
-
-            // Habilita o botão de rodar o sistema conforme o PDF exige
-            jbRunSystem.setEnabled(true);
+            int totalRegistersCount = records.size();
             
-            logger.info("Usuário selecionou "
-           + selectedFiles.length
-           + " arquivo(s) CSV");
+            long uniqueCities = records.stream()
+                                        .map(IsolationRecord::city)
+                                        .distinct()
+                                        .count();
+                                        
+            long uniqueStates = records.stream()
+                                        .map(IsolationRecord::state)
+                                        .distinct()
+                                        .count();
+
+            totalRegisters.setText(String.valueOf(totalRegistersCount));
+            numberCities.setText(String.valueOf(uniqueCities));
+            numberStates.setText(String.valueOf(uniqueStates));
+            jbRunSystem.setEnabled(true);
+
+            logger.info("Usuário selecionou " + selectedFiles.length + " arquivo(s) CSV");
 
         } catch (Exception e) {
             e.printStackTrace();
