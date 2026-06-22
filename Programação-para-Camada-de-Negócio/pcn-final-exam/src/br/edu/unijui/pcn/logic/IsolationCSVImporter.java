@@ -27,7 +27,7 @@ public class IsolationCSVImporter {
     // Realiza a leitura de um conjunto de arquivos CSV e retorna os registros encontrados
     public static List<IsolationRecord> load(File[] files) {
         
-        logger.info("Iniciando importação de " + files.length + " arquivo(s).");
+        logger.log(Level.INFO, "Iniciando importacao de {0} arquivo(s).", files.length);
         
         List<IsolationRecord> sharedRecords = Collections.synchronizedList(new ArrayList<>());
 
@@ -36,12 +36,12 @@ public class IsolationCSVImporter {
         }
 
         int numCores = Runtime.getRuntime().availableProcessors();
-        logger.info("Pool de threads criado com " + numCores + " threads" );
+        logger.log(Level.INFO, "Pool de threads criado com {0} threads", numCores);
         
         ExecutorService executor = Executors.newFixedThreadPool(numCores);
 
         for (File file : files) {
-            logger.info("Arquivo enviado para processamento: "+ file.getName());
+            logger.log(Level.INFO, "Arquivo enviado para processamento: {0}", file.getName());
             executor.submit(() -> parseFile(file, sharedRecords));
         }
 
@@ -89,11 +89,11 @@ public class IsolationCSVImporter {
                         targetList.add(record);
 
                     } catch (NumberFormatException nfe) {
-                        logger.warning("Erro de conversão no arquivo "+ file.getName()+". Linha ignorada: "+ line);
+                        logger.log(Level.WARNING, "Erro de conversao no arquivo {0}. Linha ignorada: {1}", new Object[]{file.getName(), line});
                     }
                 }
             }
-            logger.info("Leitura concluída para o arquivo: "+ file.getName());
+            logger.log(Level.INFO, "Leitura concluida para o arquivo: {0}", file.getName());
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Erro ao ler arquivo: "+ file.getName(), e);
         }

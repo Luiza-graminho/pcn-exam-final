@@ -28,7 +28,7 @@ public class AppLogger {
             // Carrega as configurações definidas para o sistema de logs
             Properties conf = getLogConf();
 
-            logger.info("Configuração carregada. Arquivo: "+ conf.getProperty("file"));
+            logger.log(Level.INFO, "Configuracao carregada. Arquivo: {0}", conf.getProperty("file"));
             
             // Cria o manipulador responsável pela gravação dos logs em arquivo
             FileHandler fh = new FileHandler(
@@ -66,7 +66,7 @@ public class AppLogger {
 
             // Define o nível mínimo de mensagens que serão registradas
             root.setLevel(parseLevel(conf.getProperty("level")));
-            logger.info("Nível de log configurado para: "+ conf.getProperty("level"));
+            logger.log(Level.INFO, "Nivel de log configurado para: {0}", conf.getProperty("level"));
 
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Erro ao configurar logger", e);
