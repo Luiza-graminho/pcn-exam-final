@@ -6,9 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,10 +18,11 @@ public class DBManager {
     private final String username;
     private final String password;
     private Connection activeConnection = null;
-    private static final Logger logger
-            = Logger.getLogger(DBManager.class.getName());
+    private static final Logger logger = Logger.getLogger(DBManager.class.getName());
 
+    // Construtor responsável pela conexão com o banco de dados
     public DBManager(String hostName, int port, String dbName, String username, String password) {
+        //Armazena os parametros necessários para conexão com o banco
         this.hostName = hostName;
         this.port = port;
         this.dbName = dbName;
@@ -32,48 +31,56 @@ public class DBManager {
     }
 
     private Connection openConnection() throws SQLException {
+        // Monta a URL de conexão utilizando os parâmetros informados
         String url = String.format("jdbc:derby://%s:%d/%s", hostName, port, dbName);
-        logger.info("Tentando conectar ao banco: " + url);
-
+        
+        // Tenta carregar explicitamente o driver JDBC do Derby
         try {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
+            logger.info("Driver Derby carregado com sucesso");
         } catch (Throwable t) {
             logger.warning(
                     "Driver Derby não carregado explicitamente. "
                     + "Tentando conexão via DriverManager."
             );
-            System.out.println("Aviso: Driver carregado por contingência via DriverManager.");
         }
 
-        logger.info("Conexão com banco estabelecida com sucesso");
+        logger.info("Abrindo conexão com o banco de dados");
 
+        // Cria e retorna uma nova conexão com o banco de dados
         return DriverManager.getConnection(url, username, password);
     }
 
+    //Garante que exista uma conexão ativa antes de alterar modo de transação
     public void setAutoCommit(boolean status) throws SQLException {
         if (activeConnection == null || activeConnection.isClosed()) {
             activeConnection = openConnection();
         }
         activeConnection.setAutoCommit(status);
 
-        logger.info("Commit realizado com sucesso");
+        logger.log(Level.INFO, "AutoCommit alterado para: {0}", status);
     }
 
+    // Confirma as alterações pendentes da transação
     public void commit() throws SQLException {
         if (activeConnection != null && !activeConnection.isClosed()) {
+            logger.info("Realizando commit da transação");
             activeConnection.commit();
+            logger.info("Encerrando conexão após commit");
             activeConnection.close();
             logger.info("Conexão encerrada");
         }
     }
 
+    // Insere lista de registros de isolamento social no banco
     public void insertAll(List<IsolationRecord> records) {
 
-        logger.info("Iniciando inserção de " + records.size() + "registros");
+        logger.log(Level.INFO, "Iniciando insercaoo de {0}registros", records.size());
         Connection conn = null;
         PreparedStatement stmtIso = null;
 
         try {
+            //Utiliza conexão ativa caso exista, caso contrário abre nova conexão
             if (activeConnection != null && !activeConnection.isClosed()) {
                 conn = activeConnection;
             } else {
@@ -81,11 +88,13 @@ public class DBManager {
                 conn.setAutoCommit(true);
             }
 
+            // Comando SQL utilizado para inserir registros na tabela SOCIAL_ISOLATION
             String sqlIsolation = "INSERT INTO SOCIAL_ISOLATION (CITY, STATE_ID, INDEX, DATE_WHEN) VALUES (?, ?, ?, ?)";
             stmtIso = conn.prepareStatement(sqlIsolation);
 
             int totalInseridos = 0;
 
+            // Percorre todos os registros recebidos para persistencia
             for (IsolationRecord record : records) {
                 Long stateId = getOrInsertState(conn, record);
 
@@ -96,21 +105,19 @@ public class DBManager {
 
                 stmtIso.executeUpdate();
 
+                logger.log(Level.FINE, "Inserindo registro: {0} - {1}", new Object[]{record.city(), record.stateAcronym()});
+                
                 totalInseridos++;
             }
 
-            logger.info("Inserção concluída. Total de registros inseridos: " + totalInseridos);
+            logger.log(Level.INFO, "Insercao concluida. Total de registros inseridos: {0}", totalInseridos);
 
             if (activeConnection == null && conn != null) {
                 conn.close();
             }
 
         } catch (SQLException e) {
-            logger.log(
-                    Level.WARNING,
-                    "Erro ao inserir registros no banco",
-                    e
-            );
+            logger.log(Level.WARNING,"Erro ao inserir registros no banco",e);
             throw new RuntimeException("Erro ao inserir em lote: " + e.getMessage(), e);
         } finally {
             try {
@@ -124,10 +131,9 @@ public class DBManager {
 
     private Long getOrInsertState(Connection conn, IsolationRecord record) throws SQLException {
 
-        logger.info(
-                "Estado já existente: "
-                + record.state()
-        );
+        logger.log(Level.INFO, "Verificando existencia do estado: {0}", record.state());
+        
+        // Consulta o ID do estado pelo nome
         String selectSql = "SELECT ID FROM STATE WHERE NAME = ?";
         String insertSql = "INSERT INTO STATE (NAME, ACRONYM) VALUES (?, ?)";
 
@@ -135,32 +141,30 @@ public class DBManager {
             selectStmt.setString(1, record.state());
             try (ResultSet rs = selectStmt.executeQuery()) {
                 if (rs.next()) {
+                    logger.info("Estado encontrado no banco");
                     return rs.getLong("ID");
                 }
             }
         }
 
         try (PreparedStatement insertStmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
-            logger.info(
-                    "Inserindo novo estado: "
-                    + record.state()
-                    + " (" + record.stateAcronym() + ")"
-            );
+            logger.log(Level.INFO, "Inserindo novo estado: {0} ({1})", new Object[]{record.state(), record.stateAcronym()});
+            // Caso o estado não exista, realiza sua inserção
             insertStmt.setString(1, record.state());
             insertStmt.setString(2, record.stateAcronym());
             insertStmt.executeUpdate();
 
             try (ResultSet generatedKeys = insertStmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    logger.info(
-                            "Estado inserido com sucesso: "
-                            + record.state()
-                    );
+                    logger.log(Level.INFO, "Estado inserido com sucesso: {0}", record.state());
+                    // Retorna a chave gerada para o novo estado
                     return generatedKeys.getLong(1);
 
                 }
             }
         }
+        
+        logger.log(Level.WARNING, "Nao foi possivel obter o ID do estado: {0}", record.state());
         return 0L;
     }
 
@@ -170,17 +174,16 @@ public class DBManager {
         }
     }
 
+    // Busca o registro com maior índice de isolamento social
     public IsolationRecord findTheHighest(String whereToFind) {
 
-        logger.info(
-                "Buscando maior índice de isolamento para: "
-                + whereToFind
-        );
+        logger.log(Level.INFO, "Buscando maior indice de isolamento para: {0}", whereToFind);
 
         try (Connection conn = openConnection()) {
 
             String sql;
 
+            // Consulta o maior índice considerando todos os estados do país
             if (whereToFind.equals("Brazil")) {
 
                 sql = """
@@ -208,6 +211,8 @@ public class DBManager {
                     );
                 }
 
+            // Extrai a sigla do estado selecionado
+            // Consulta o maior índice somente do estado informado
             } else {
 
                 String acronym = whereToFind.substring(
@@ -234,6 +239,7 @@ public class DBManager {
                 ResultSet rs = stmt.executeQuery();
 
                 if (rs.next()) {
+                    logger.log(Level.INFO, "Maior Indice encontrado para {0}", whereToFind);
                     return new IsolationRecord(
                             rs.getString("NAME"),
                             rs.getString("ACRONYM"),
@@ -244,10 +250,7 @@ public class DBManager {
                 }
             }
 
-            logger.info(
-                    "Maior índice encontrado para "
-                    + whereToFind
-            );
+            
 
         } catch (Exception e) {
             logger.log(
@@ -257,15 +260,14 @@ public class DBManager {
             );
         }
 
+        
         return null;
     }
 
+    // Busca o registro com menor índice de isolamento social
     public IsolationRecord findTheLowest(String whereToFind) {
 
-        logger.info(
-                "Buscando menor índice de isolamento para: "
-                + whereToFind
-        );
+        logger.log(Level.INFO, "Buscando menor Indice de isolamento para: {0}", whereToFind);
 
         try (Connection conn = openConnection()) {
 
@@ -298,10 +300,7 @@ public class DBManager {
                     );
                 }
 
-                logger.info(
-                        "Menor índice encontrado para "
-                        + whereToFind
-                );
+                
 
             } else {
 
@@ -329,6 +328,7 @@ public class DBManager {
                 ResultSet rs = stmt.executeQuery();
 
                 if (rs.next()) {
+                    logger.log(Level.INFO, "Menor Indice encontrado para {0}", whereToFind);
                     return new IsolationRecord(
                             rs.getString("NAME"),
                             rs.getString("ACRONYM"),
@@ -338,10 +338,7 @@ public class DBManager {
                     );
                 }
             }
-            logger.info(
-                    "Menor índice encontrado para "
-                    + whereToFind
-            );
+            
         } catch (Exception e) {
             logger.log(
                     Level.WARNING,
@@ -353,14 +350,14 @@ public class DBManager {
         return null;
     }
 
+    // Recupera todos os registros cadastrados no banco de dados
     public List<IsolationRecord> getAllRecords() {
 
-        logger.info(
-                "Iniciando recuperação de registros do banco"
-        );
+        logger.info("Iniciando recuperação de registros do banco");
 
         List<IsolationRecord> records = new java.util.ArrayList<>();
 
+        // Consulta responsável por recuperar os registros e as informações do estado relacionado
         String sql = """
         SELECT
             s.NAME,
@@ -377,8 +374,10 @@ public class DBManager {
         try (
                 Connection conn = openConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
+            // Percorre todos os registros retornados pela consulta
             while (rs.next()) {
 
+                // Converte cada linha do resultSet para um objeto IsolationRecord
                 records.add(
                         new IsolationRecord(
                                 rs.getString("NAME"),
@@ -390,10 +389,7 @@ public class DBManager {
                 );
             }
 
-            logger.info(
-                    "Total de registros recuperados: "
-                    + records.size()
-            );
+            
 
         } catch (Exception e) {
             logger.log(
@@ -402,7 +398,7 @@ public class DBManager {
                     e
             );
         }
-
+        logger.log(Level.INFO, "Total de registros recuperados: {0}", records.size());
         return records;
     }
 }

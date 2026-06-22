@@ -6,18 +6,16 @@ import br.edu.unijui.pcn.logic.IsolationCSVImporter;
 import br.edu.unijui.pcn.logic.IsolationRecord;
 import br.edu.unijui.pcn.logic.XMLTransformer;
 import br.edu.unijui.pcn.utils.XMLHandler;
+import java.awt.HeadlessException;
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Interface implementada parcialmente pelo professor. Siga as instruções da
@@ -27,14 +25,21 @@ import java.util.logging.Level;
  */
 public class MainFrame extends javax.swing.JFrame {
     
-     private static final Logger logger
-            = Logger.getLogger(DBManager.class.getName());
+    private static final Logger logger = Logger.getLogger(MainFrame.class.getName());
 
+    // Inicializa os componentes gráficos e configura o sistema de logs
     public MainFrame() {
-        initComponents();
-        setLocationRelativeTo(this);
         
+        logger.info("Inicializando interface principal");
+        
+        // Inicializa todos os componentes da interface
+        initComponents();
+        // Centraliza a janela na tela
+        setLocationRelativeTo(this);
+        // Inicializa a configuração global de logs
         AppLogger.init();
+        
+        logger.info("Sistema iniciado com sucesso");
     }
 
     /**
@@ -472,7 +477,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jbExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbExitActionPerformed
         
-        logger.info("Carregando configurações do arquivo config.xml");
+        logger.info("Solicitação de encerramento da aplicação");
+        
         int r = JOptionPane.showConfirmDialog(this, "Do you really want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
         if (r == JOptionPane.YES_OPTION) {
             logger.info("Configurações carregadas com sucesso");
@@ -487,13 +493,28 @@ public class MainFrame extends javax.swing.JFrame {
      */
     private void jbExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbExportActionPerformed
 
-        final String XML_FILE_NAME = xmlOutputFileName.getText(); // Essa variável contém o nome do arquivo ao qual deve ser exportado o XML
-       
-        logger.info("Iniciando exportação XML para "
-            + XML_FILE_NAME);
+        // Obtém o nome do arquivo XML informado pelo usuário
+        final String XML_FILE_NAME = xmlOutputFileName.getText(); 
+        
+        if (XML_FILE_NAME.isEmpty()){
+            
+            logger.warning("Tentativa de export sem informar o nome do arquivo");
+            
+            JOptionPane.showMessageDialog(
+                this,
+                    "Informe o nome do arquivo XML antes de exportar",
+                    "Campo obrigatório",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            
+            return;
+        }
+            
+        logger.info("Iniciando exportação para XML");
         
         try {
 
+            // Cria conexão com o banco utilizando os dados informados
             DBManager db = new DBManager(
                     hostName.getText(),
                     Integer.parseInt(port.getText()),
@@ -504,6 +525,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             XMLTransformer transformer = new XMLTransformer(db);
 
+            // Responsável pela geração do arquivo XML
             transformer.export(XML_FILE_NAME);
 
             JOptionPane.showMessageDialog(
@@ -515,9 +537,9 @@ public class MainFrame extends javax.swing.JFrame {
             
             logger.info("Arquivo XML exportado com sucesso");
 
-        } catch (Exception e) {
+        } catch (HeadlessException | NumberFormatException e) {
 
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Erro ao exportar XML!", e);
 
             JOptionPane.showMessageDialog(
                     this,
@@ -525,17 +547,22 @@ public class MainFrame extends javax.swing.JFrame {
                     "Erro",
                     JOptionPane.ERROR_MESSAGE
             );
-            logger.log(Level.WARNING,
-          "Erro durante exportação XML",
-          e);
+            
         }
 
     }//GEN-LAST:event_jbExportActionPerformed
 
     /**
      * IMPLEMENTA A AÇÃO DO BOTÃO "RUN SYSTEM DATABASE LOAD"
+     * 
+     * Insere os registros carregados dos arquivos CSV
+     * no banco de dados configurado
      */
     private void jbRunSystemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbRunSystemActionPerformed
+        
+        logger.info("Iniciando inserção dos registros no banco");
+        
+        // Verifica se as configurações do banco foram carregadas
         if (dbName.getText().isEmpty()
                 || port.getText().isEmpty()
                 || hostName.getText().isEmpty()
@@ -545,6 +572,7 @@ public class MainFrame extends javax.swing.JFrame {
             return;
         }
 
+        // Verifica se existem registros carregados para inserção
         if (records == null || records.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No records loaded from CSV to insert.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
@@ -558,14 +586,17 @@ public class MainFrame extends javax.swing.JFrame {
             String pass = new String(password.getPassword());
             boolean useTransactions = enableTransactions.getText().equalsIgnoreCase("yes");
 
+            // Cria o gerenciador de banco de dados
             DBManager dbManager = new DBManager(host, portNum, db, user, pass);
 
+            // Configura o modo de transação conforme definido no XML
             if (useTransactions) {
                 dbManager.setAutoCommit(false);
             } else {
                 dbManager.setAutoCommit(true);
             }
 
+            // Persiste todos os registros carregados
             dbManager.insertAll(records);
 
             if (useTransactions) {
@@ -573,22 +604,22 @@ public class MainFrame extends javax.swing.JFrame {
             }
 
             JOptionPane.showMessageDialog(this, "All records inserted into database successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            logger.info(records.size() + " registros inseridos com sucesso");
+            
+            logger.log(Level.INFO, "{0} registros inseridos com sucesso", records.size());
+            
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid port number field.", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            e.printStackTrace();
+            
+        } catch (HeadlessException | SQLException e) {
+            logger.log(Level.WARNING, "Erro ao adicionar dados no banco", e);
             JOptionPane.showMessageDialog(this, "Database error during execution: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-            logger.log(Level.WARNING,
-          "Erro durante inserção no banco",
-          e);
+            
         }
 
     }//GEN-LAST:event_jbRunSystemActionPerformed
 
     /**
-     * MÉTODO IMPLEMENTADO PARA VOCÊ ESSE MÉTODO IMPLEMENTA A AÇÃO DO BOTÃO
-     * "SELECT..."
+     * Permite selecionar os arquivos CSV que serão importados"
      */
     private void jbInputFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbInputFileButtonActionPerformed
 
@@ -628,26 +659,29 @@ public class MainFrame extends javax.swing.JFrame {
             numberStates.setText(String.valueOf(uniqueStates));
             jbRunSystem.setEnabled(true);
 
-            logger.info("Usuário selecionou " + selectedFiles.length + " arquivo(s) CSV");
+            logger.log(Level.INFO, "Usuario selecionou {0} arquivo(s) CSV", selectedFiles.length);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (HeadlessException e) {
+            logger.log(Level.SEVERE, "Erro ao carregar arquivos CSV", e);
             JOptionPane.showMessageDialog(this, "Erro ao carregar arquivos CSV: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_jbInputFileButtonActionPerformed
 
     /**
-     * IMPLEMENTA A AÇÃO DO BOTÃO "LOAD XML CONF"
+     * Carrega as configurações de conexão armazenadas no arquivo config.xml
      */
     private void jbLoadXMLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbLoadXMLActionPerformed
 
         try {
+            logger.info("Carregando configurações do arquivo config.xml");
+            
             String CONFIG_FILE_NAME = "config.xml";
 
             org.w3c.dom.Document doc = XMLHandler.readXmlFile(CONFIG_FILE_NAME);
 
             if (doc == null) {
+                logger.warning("Erro ao carregar o arquivo XML");
                 JOptionPane.showMessageDialog(this, "Erro ao carregar o arquivo config.xml", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -669,19 +703,23 @@ public class MainFrame extends javax.swing.JFrame {
             enableTransactions.setText(xmlTransactions);
 
             JOptionPane.showMessageDialog(this, "Configurações do XML carregadas com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Configurações carregadas com sucesso");
+            
+        } catch (HeadlessException e) {
+            logger.log(Level.SEVERE, "Erro ao carregar configurações XML", e);
             JOptionPane.showMessageDialog(this, "Erro ao processar as configurações: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jbLoadXMLActionPerformed
 
-
+// Busca o maior e o menor índice de isolamento para o 
+// estado selecionado ou para o Brasil inteiro
     private void jbFindIsolationIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbFindIsolationIndexActionPerformed
 
         final String WHERE_TO_FIND = jcbWhereToFind.getSelectedItem().toString(); // Essa variável contém o nome e a sigla do estado selecionado
 
         try {
+            
+            logger.log(Level.INFO, "Consultando indices para: {0}", WHERE_TO_FIND);
 
             DBManager db = new DBManager(
                     hostName.getText(),
@@ -711,11 +749,11 @@ public class MainFrame extends javax.swing.JFrame {
                         + lowest.index() + "%"
                 );
             }
+            
             logger.info("Consulta realizada com sucesso");
-        } catch (Exception e) {
-            logger.log(Level.WARNING,
-          "Erro durante consulta de isolamento",
-          e);
+            
+        } catch (NumberFormatException e) {
+            logger.log(Level.WARNING,"Erro durante consulta de isolamento",e);
             JOptionPane.showMessageDialog(
                     this,
                     e.getMessage(),
