@@ -7,7 +7,6 @@ import br.edu.unijui.pcn.logic.IsolationRecord;
 import br.edu.unijui.pcn.logic.XMLTransformer;
 import br.edu.unijui.pcn.utils.XMLHandler;
 import java.io.File;
-import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import java.util.logging.Level;
 
 /**
  * Interface implementada parcialmente pelo professor. Siga as instruções da
@@ -478,7 +478,7 @@ public class MainFrame extends javax.swing.JFrame {
             logger.info("Configurações carregadas com sucesso");
             System.exit(0);
         } else {
-            logger.log(Level.WARNING,"Não foi possível carregar as informações",e);
+            logger.log(Level.WARNING,"Não foi possível carregar as informações");
         }
     }//GEN-LAST:event_jbExitActionPerformed
 
