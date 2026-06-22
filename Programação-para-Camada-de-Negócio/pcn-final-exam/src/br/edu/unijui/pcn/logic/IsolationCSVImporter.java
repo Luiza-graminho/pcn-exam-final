@@ -10,14 +10,25 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
+ * Responsável pela leitura e importação dos arquivos CSV contendo os registros de isolamento social
+ * 
+ * A leitura é realizada de forma paralela utilizando múltiplas threads
+ * 
  * @author Isadora Beckmann e Luiza Graminho
  */
 public class IsolationCSVImporter {
 
+    private static final Logger logger = Logger.getLogger(IsolationCSVImporter.class.getName());
+    
+    // Realiza a leitura de um conjunto de arquivos CSV e retorna os registros encontrados
     public static List<IsolationRecord> load(File[] files) {
+        
+        logger.info("Iniciando importação de " + files.length + " arquivo(s).");
+        
         List<IsolationRecord> sharedRecords = Collections.synchronizedList(new ArrayList<>());
 
         if (files == null || files.length == 0) {
@@ -25,9 +36,12 @@ public class IsolationCSVImporter {
         }
 
         int numCores = Runtime.getRuntime().availableProcessors();
+        logger.info("Pool de threads criado com " + numCores + " threads" );
+        
         ExecutorService executor = Executors.newFixedThreadPool(numCores);
 
         for (File file : files) {
+            logger.info("Arquivo enviado para processamento: "+ file.getName());
             executor.submit(() -> parseFile(file, sharedRecords));
         }
 
@@ -35,10 +49,10 @@ public class IsolationCSVImporter {
 
         try {
             if (!executor.awaitTermination(10, TimeUnit.MINUTES)) {
-                System.err.println("Aviso: O tempo limite para leitura dos arquivos expirou.");
+                logger.warning("Tempo limite excedido durante a leitura dos arquivos");
             }
         } catch (InterruptedException e) {
-            System.err.println("A leitura dos arquivos foi interrompida.");
+            logger.log(Level.WARNING, "A leitura dos arquivos foi interrompida", e);
             Thread.currentThread().interrupt();
         }
 
@@ -46,6 +60,10 @@ public class IsolationCSVImporter {
     }
 
     private static void parseFile(File file, List<IsolationRecord> targetList) {
+        
+        logger.info("Iniciando leitura dos arquivos");
+        
+        // Abre o arquivo para leitura linha por linha
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             boolean isHeader = true;
@@ -71,12 +89,13 @@ public class IsolationCSVImporter {
                         targetList.add(record);
 
                     } catch (NumberFormatException nfe) {
-                        System.err.println("Erro de formato na linha do arquivo " + file.getName() + ": " + line);
+                        logger.warning("Erro de conversão no arquivo "+ file.getName()+". Linha ignorada: "+ line);
                     }
                 }
             }
+            logger.info("Leitura concluída para o arquivo: "+ file.getName());
         } catch (IOException e) {
-            System.err.println("Erro crítico ao ler o arquivo " + file.getName() + ": " + e.getMessage());
+            logger.log(Level.SEVERE, "Erro ao ler arquivo: "+ file.getName(), e);
         }
     }
 }
