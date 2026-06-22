@@ -496,6 +496,20 @@ public class MainFrame extends javax.swing.JFrame {
         // Obtém o nome do arquivo XML informado pelo usuário
         final String XML_FILE_NAME = xmlOutputFileName.getText(); 
         
+        if (XML_FILE_NAME.isEmpty()){
+            
+            logger.warning("Tentativa de export sem informar o nome do arquivo");
+            
+            JOptionPane.showMessageDialog(
+                this,
+                    "Informe o nome do arquivo XML antes de exportar",
+                    "Campo obrigatório",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            
+            return;
+        }
+            
         logger.info("Iniciando exportação para XML");
         
         try {
