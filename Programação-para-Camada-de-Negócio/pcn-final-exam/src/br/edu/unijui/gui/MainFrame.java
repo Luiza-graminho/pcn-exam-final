@@ -489,7 +489,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jbExitActionPerformed
 
     /**
-     * IMPLEMENTA A AÇÃO DO BOTÃO "EXPORT TO XML"
+     * IMPLEMENTA A AÇÃO DO BOTÃO "EXPORT TO XML". Atividade 6
      */
     private void jbExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbExportActionPerformed
 
@@ -556,7 +556,7 @@ public class MainFrame extends javax.swing.JFrame {
      * IMPLEMENTA A AÇÃO DO BOTÃO "RUN SYSTEM DATABASE LOAD"
      *
      * Insere os registros carregados dos arquivos CSV no banco de dados
-     * configurado
+     * configurado. Atividade 4
      */
     private void jbRunSystemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbRunSystemActionPerformed
 
@@ -669,7 +669,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jbInputFileButtonActionPerformed
 
     /**
-     * Carrega as configurações de conexão armazenadas no arquivo config.xml
+     * Carrega as configurações de conexão armazenadas no arquivo config.xml. Atividade 3
      */
     private void jbLoadXMLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbLoadXMLActionPerformed
 
@@ -712,7 +712,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jbLoadXMLActionPerformed
 
 // Busca o maior e o menor índice de isolamento para o 
-// estado selecionado ou para o Brasil inteiro
+// estado selecionado ou para o Brasil inteiro. Atividade 5
     private void jbFindIsolationIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbFindIsolationIndexActionPerformed
 
         final String WHERE_TO_FIND = jcbWhereToFind.getSelectedItem().toString(); // Essa variável contém o nome e a sigla do estado selecionado

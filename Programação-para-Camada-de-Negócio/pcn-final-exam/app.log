@@ -127,3 +127,108 @@ jun. 23, 2026 7:31:46 PM br.edu.unijui.gui.MainFrame jbExitActionPerformed
 INFORMAÇÕES: Solicitação de encerramento da aplicação
 jun. 23, 2026 7:31:47 PM br.edu.unijui.gui.MainFrame jbExitActionPerformed
 INFORMAÇÕES: Configurações carregadas com sucesso
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2026-06-23T23:11:13.774341Z</date>
+  <millis>1782256273774</millis>
+  <nanos>341000</nanos>
+  <sequence>4</sequence>
+  <logger>COVID_LOGGER</logger>
+  <level>INFO</level>
+  <class>br.edu.unijui.logger.AppLogger</class>
+  <method>init</method>
+  <thread>31</thread>
+  <message>Formato de saída configurado para texto simples</message>
+</record>
+jun. 23, 2026 8:11:13 PM br.edu.unijui.logger.AppLogger init
+INFORMAÇÕES: Nivel de log configurado para: INFO
+jun. 23, 2026 8:11:13 PM br.edu.unijui.logger.AppLogger init
+INFORMAÇÕES: Sistema de logs inicializado com sucesso
+jun. 23, 2026 8:11:13 PM br.edu.unijui.gui.MainFrame <init>
+INFORMAÇÕES: Sistema iniciado com sucesso
+jun. 23, 2026 8:11:16 PM br.edu.unijui.gui.MainFrame jbLoadXMLActionPerformed
+INFORMAÇÕES: Carregando configurações do arquivo config.xml
+jun. 23, 2026 8:11:16 PM br.edu.unijui.pcn.utils.XMLHandler readXmlFile
+INFORMAÇÕES: Lendo arquivo XML: config.xml
+jun. 23, 2026 8:11:16 PM br.edu.unijui.pcn.utils.XMLHandler readXmlFile
+INFORMAÇÕES: Arquivo XML carregado com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Buscando valor XPath: /config/database/@host-name
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Compilando expressão XPath: /config/database/@host-name
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Expressão XPath compilada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Consulta XPath executada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Buscando valor XPath: /config/database/@port
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Compilando expressão XPath: /config/database/@port
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Expressão XPath compilada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Consulta XPath executada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Buscando valor XPath: /config/database/@db-name
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Compilando expressão XPath: /config/database/@db-name
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Expressão XPath compilada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Consulta XPath executada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Buscando valor XPath: /config/database/@username
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Compilando expressão XPath: /config/database/@username
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Expressão XPath compilada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Consulta XPath executada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Buscando valor XPath: /config/database/@password
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Compilando expressão XPath: /config/database/@password
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Expressão XPath compilada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Consulta XPath executada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Buscando valor XPath: /config/database/@enable-transactions
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Compilando expressão XPath: /config/database/@enable-transactions
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXPathExpression
+INFORMAÇÕES: Expressão XPath compilada com sucesso
+jun. 23, 2026 8:11:17 PM br.edu.unijui.pcn.utils.XMLHandler getXMLValue
+INFORMAÇÕES: Consulta XPath executada com sucesso
+jun. 23, 2026 8:11:18 PM br.edu.unijui.gui.MainFrame jbLoadXMLActionPerformed
+INFORMAÇÕES: Configurações carregadas com sucesso
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter load
+INFORMAÇÕES: Iniciando importacao de 3 arquivo(s).
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter load
+INFORMAÇÕES: Pool de threads criado com 12 threads
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter load
+INFORMAÇÕES: Arquivo enviado para processamento: maranhao.csv
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter load
+INFORMAÇÕES: Arquivo enviado para processamento: mato-grosso-do-sul.csv
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter parseFile
+INFORMAÇÕES: Iniciando leitura dos arquivos
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter load
+INFORMAÇÕES: Arquivo enviado para processamento: mato-grosso.csv
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter parseFile
+INFORMAÇÕES: Iniciando leitura dos arquivos
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter parseFile
+INFORMAÇÕES: Iniciando leitura dos arquivos
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter parseFile
+INFORMAÇÕES: Leitura concluida para o arquivo: mato-grosso-do-sul.csv
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter parseFile
+INFORMAÇÕES: Leitura concluida para o arquivo: mato-grosso.csv
+jun. 23, 2026 8:11:38 PM br.edu.unijui.pcn.logic.IsolationCSVImporter parseFile
+INFORMAÇÕES: Leitura concluida para o arquivo: maranhao.csv
+jun. 23, 2026 8:11:38 PM br.edu.unijui.gui.MainFrame jbInputFileButtonActionPerformed
+INFORMAÇÕES: Usuario selecionou 3 arquivo(s) CSV
+jun. 23, 2026 8:11:41 PM br.edu.unijui.gui.MainFrame jbExitActionPerformed
+INFORMAÇÕES: Solicitação de encerramento da aplicação
+jun. 23, 2026 8:11:42 PM br.edu.unijui.gui.MainFrame jbExitActionPerformed
+INFORMAÇÕES: Configurações carregadas com sucesso

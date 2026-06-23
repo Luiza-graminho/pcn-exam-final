@@ -184,7 +184,7 @@ public class DBManager {
             String sql;
 
             // Consulta o maior índice considerando todos os estados do país
-            if (whereToFind.equals("Brazil")) {
+            if ("Brazil".equals(whereToFind)) {
 
                 sql = """
                   SELECT s.NAME,
@@ -273,7 +273,7 @@ public class DBManager {
 
             String sql;
 
-            if (whereToFind.equals("Brazil")) {
+            if ("Brazil".equals(whereToFind)) {
 
                 sql = """
                   SELECT s.NAME,
