@@ -168,12 +168,6 @@ public class DBManager {
         return 0L;
     }
 
-    public Long getOrInsertState(IsolationRecord record) throws SQLException {
-        try (Connection conn = openConnection()) {
-            return getOrInsertState(conn, record);
-        }
-    }
-
     // Busca o registro com maior índice de isolamento social
     public IsolationRecord findTheHighest(String whereToFind) {
 
@@ -187,16 +181,16 @@ public class DBManager {
             if ("Brazil".equals(whereToFind)) {
 
                 sql = """
-                  SELECT s.NAME,
-                         s.ACRONYM,
-                         si.CITY,
-                         si."INDEX",
-                         si.DATE_WHEN
-                  FROM SOCIAL_ISOLATION si
-                  JOIN STATE s ON s.ID = si.STATE_ID
-                  ORDER BY si.INDEX DESC
-                  FETCH FIRST 1 ROW ONLY
-                  """;
+                        SELECT s.NAME,
+                               s.ACRONYM,
+                               si.CITY,
+                               si."INDEX",
+                               si.DATE_WHEN
+                        FROM SOCIAL_ISOLATION si
+                        JOIN STATE s ON s.ID = si.STATE_ID
+                        ORDER BY si.INDEX DESC
+                        FETCH FIRST 1 ROW ONLY
+                     """;
 
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery();
@@ -210,7 +204,6 @@ public class DBManager {
                             rs.getString("DATE_WHEN")
                     );
                 }
-
             // Extrai a sigla do estado selecionado
             // Consulta o maior índice somente do estado informado
             } else {
@@ -221,17 +214,17 @@ public class DBManager {
                 );
 
                 sql = """
-                  SELECT s.NAME,
-                         s.ACRONYM,
-                         si.CITY,
-                         si."INDEX",
-                         si.DATE_WHEN
-                  FROM SOCIAL_ISOLATION si
-                  JOIN STATE s ON s.ID = si.STATE_ID
-                  WHERE s.ACRONYM = ?
-                  ORDER BY si.INDEX DESC
-                  FETCH FIRST 1 ROW ONLY
-                  """;
+                        SELECT s.NAME,
+                               s.ACRONYM,
+                               si.CITY,
+                               si."INDEX",
+                               si.DATE_WHEN
+                        FROM SOCIAL_ISOLATION si
+                        JOIN STATE s ON s.ID = si.STATE_ID
+                        WHERE s.ACRONYM = ?
+                        ORDER BY si.INDEX DESC
+                        FETCH FIRST 1 ROW ONLY
+                    """;
 
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setString(1, acronym);
@@ -253,11 +246,7 @@ public class DBManager {
             
 
         } catch (Exception e) {
-            logger.log(
-                    Level.WARNING,
-                    "Erro ao buscar maior índice de isolamento",
-                    e
-            );
+            logger.log(Level.WARNING, "Erro ao buscar maior índice de isolamento", e);
         }
 
         
@@ -276,16 +265,16 @@ public class DBManager {
             if ("Brazil".equals(whereToFind)) {
 
                 sql = """
-                  SELECT s.NAME,
-                         s.ACRONYM,
-                         si.CITY,
-                         si."INDEX",
-                         si.DATE_WHEN
-                  FROM SOCIAL_ISOLATION si
-                  JOIN STATE s ON s.ID = si.STATE_ID
-                  ORDER BY si.INDEX ASC
-                  FETCH FIRST 1 ROW ONLY
-                  """;
+                        SELECT s.NAME,
+                               s.ACRONYM,
+                               si.CITY,
+                               si."INDEX",
+                               si.DATE_WHEN
+                        FROM SOCIAL_ISOLATION si
+                        JOIN STATE s ON s.ID = si.STATE_ID
+                        ORDER BY si.INDEX ASC
+                        FETCH FIRST 1 ROW ONLY
+                    """;
 
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery();
@@ -340,11 +329,7 @@ public class DBManager {
             }
             
         } catch (Exception e) {
-            logger.log(
-                    Level.WARNING,
-                    "Erro ao buscar menor índice de isolamento",
-                    e
-            );
+            logger.log(Level.WARNING, "Erro ao buscar menor índice de isolamento", e);
         }
 
         return null;
@@ -359,17 +344,17 @@ public class DBManager {
 
         // Consulta responsável por recuperar os registros e as informações do estado relacionado
         String sql = """
-        SELECT
-            s.NAME,
-            s.ACRONYM,
-            si.CITY,
-            si."INDEX",
-            si.DATE_WHEN
-        FROM SOCIAL_ISOLATION si
-        INNER JOIN STATE s
-            ON s.ID = si.STATE_ID
-        ORDER BY si.CITY ASC
-    """;
+                        SELECT
+                            s.NAME,
+                            s.ACRONYM,
+                            si.CITY,
+                            si."INDEX",
+                            si.DATE_WHEN
+                        FROM SOCIAL_ISOLATION si
+                        INNER JOIN STATE s
+                            ON s.ID = si.STATE_ID
+                        ORDER BY si.CITY ASC
+                    """;
 
         try (
                 Connection conn = openConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
@@ -388,15 +373,8 @@ public class DBManager {
                         )
                 );
             }
-
-            
-
         } catch (Exception e) {
-            logger.log(
-                    Level.WARNING,
-                    "Erro ao recuperar registros do banco",
-                    e
-            );
+            logger.log(Level.WARNING, "Erro ao recuperar registros do banco", e);
         }
         logger.log(Level.INFO, "Total de registros recuperados: {0}", records.size());
         return records;
