@@ -24,21 +24,21 @@ import java.util.logging.Logger;
  * @author Rafael Zancan Frantz
  */
 public class MainFrame extends javax.swing.JFrame {
-    
+
     private static final Logger logger = Logger.getLogger(MainFrame.class.getName());
 
     // Inicializa os componentes gráficos e configura o sistema de logs
     public MainFrame() {
-        
+
         logger.info("Inicializando interface principal");
-        
+
         // Inicializa todos os componentes da interface
         initComponents();
         // Centraliza a janela na tela
         setLocationRelativeTo(this);
         // Inicializa a configuração global de logs
         AppLogger.init();
-        
+
         logger.info("Sistema iniciado com sucesso");
     }
 
@@ -476,15 +476,15 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbExitActionPerformed
-        
+
         logger.info("Solicitação de encerramento da aplicação");
-        
+
         int r = JOptionPane.showConfirmDialog(this, "Do you really want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
         if (r == JOptionPane.YES_OPTION) {
             logger.info("Configurações carregadas com sucesso");
             System.exit(0);
         } else {
-            logger.log(Level.WARNING,"Não foi possível carregar as informações");
+            logger.log(Level.WARNING, "Não foi possível carregar as informações");
         }
     }//GEN-LAST:event_jbExitActionPerformed
 
@@ -494,24 +494,24 @@ public class MainFrame extends javax.swing.JFrame {
     private void jbExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbExportActionPerformed
 
         // Obtém o nome do arquivo XML informado pelo usuário
-        final String XML_FILE_NAME = xmlOutputFileName.getText(); 
-        
-        if (XML_FILE_NAME.isEmpty()){
-            
+        final String XML_FILE_NAME = xmlOutputFileName.getText();
+
+        if (XML_FILE_NAME.isEmpty()) {
+
             logger.warning("Tentativa de export sem informar o nome do arquivo");
-            
+
             JOptionPane.showMessageDialog(
-                this,
+                    this,
                     "Informe o nome do arquivo XML antes de exportar",
                     "Campo obrigatório",
                     JOptionPane.WARNING_MESSAGE
             );
-            
+
             return;
         }
-            
+
         logger.info("Iniciando exportação para XML");
-        
+
         try {
 
             // Cria conexão com o banco utilizando os dados informados
@@ -534,7 +534,7 @@ public class MainFrame extends javax.swing.JFrame {
                     "Sucesso",
                     JOptionPane.INFORMATION_MESSAGE
             );
-            
+
             logger.info("Arquivo XML exportado com sucesso");
 
         } catch (HeadlessException | NumberFormatException e) {
@@ -547,21 +547,21 @@ public class MainFrame extends javax.swing.JFrame {
                     "Erro",
                     JOptionPane.ERROR_MESSAGE
             );
-            
+
         }
 
     }//GEN-LAST:event_jbExportActionPerformed
 
     /**
      * IMPLEMENTA A AÇÃO DO BOTÃO "RUN SYSTEM DATABASE LOAD"
-     * 
-     * Insere os registros carregados dos arquivos CSV
-     * no banco de dados configurado
+     *
+     * Insere os registros carregados dos arquivos CSV no banco de dados
+     * configurado
      */
     private void jbRunSystemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbRunSystemActionPerformed
-        
+
         logger.info("Iniciando inserção dos registros no banco");
-        
+
         // Verifica se as configurações do banco foram carregadas
         if (dbName.getText().isEmpty()
                 || port.getText().isEmpty()
@@ -604,16 +604,16 @@ public class MainFrame extends javax.swing.JFrame {
             }
 
             JOptionPane.showMessageDialog(this, "All records inserted into database successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            
+
             logger.log(Level.INFO, "{0} registros inseridos com sucesso", records.size());
-            
+
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid port number field.", "Error", JOptionPane.ERROR_MESSAGE);
-            
+
         } catch (HeadlessException | SQLException e) {
             logger.log(Level.WARNING, "Erro ao adicionar dados no banco", e);
             JOptionPane.showMessageDialog(this, "Database error during execution: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-            
+
         }
 
     }//GEN-LAST:event_jbRunSystemActionPerformed
@@ -639,20 +639,20 @@ public class MainFrame extends javax.swing.JFrame {
             }
 
             selectedFilesJList.setModel(model);
-            
+
             records = IsolationCSVImporter.load(selectedFiles);
 
             int totalRegistersCount = records.size();
-            
+
             long uniqueCities = records.stream()
-                                        .map(IsolationRecord::city)
-                                        .distinct()
-                                        .count();
-                                        
+                    .map(IsolationRecord::city)
+                    .distinct()
+                    .count();
+
             long uniqueStates = records.stream()
-                                        .map(IsolationRecord::state)
-                                        .distinct()
-                                        .count();
+                    .map(IsolationRecord::state)
+                    .distinct()
+                    .count();
 
             totalRegisters.setText(String.valueOf(totalRegistersCount));
             numberCities.setText(String.valueOf(uniqueCities));
@@ -675,7 +675,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         try {
             logger.info("Carregando configurações do arquivo config.xml");
-            
+
             String CONFIG_FILE_NAME = "config.xml";
 
             org.w3c.dom.Document doc = XMLHandler.readXmlFile(CONFIG_FILE_NAME);
@@ -704,7 +704,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, "Configurações do XML carregadas com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             logger.info("Configurações carregadas com sucesso");
-            
+
         } catch (HeadlessException e) {
             logger.log(Level.SEVERE, "Erro ao carregar configurações XML", e);
             JOptionPane.showMessageDialog(this, "Erro ao processar as configurações: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -718,7 +718,7 @@ public class MainFrame extends javax.swing.JFrame {
         final String WHERE_TO_FIND = jcbWhereToFind.getSelectedItem().toString(); // Essa variável contém o nome e a sigla do estado selecionado
 
         try {
-            
+
             logger.log(Level.INFO, "Consultando indices para: {0}", WHERE_TO_FIND);
 
             DBManager db = new DBManager(
@@ -729,31 +729,47 @@ public class MainFrame extends javax.swing.JFrame {
                     new String(password.getPassword())
             );
 
-            IsolationRecord highest = db.findTheHighest(WHERE_TO_FIND);
-            IsolationRecord lowest = db.findTheLowest(WHERE_TO_FIND);
+            Thread highestThread = new Thread(() -> {
 
-            if (highest != null) {
+                IsolationRecord highest = db.findTheHighest(WHERE_TO_FIND);
 
-                highestIsolationIndex.setText(
-                        highest.city()
-                        + " (" + highest.date() + ") -> "
-                        + highest.index() + "%"
-                );
-            }
+                if (highest != null) {
 
-            if (lowest != null) {
+                    javax.swing.SwingUtilities.invokeLater(() -> {
 
-                lowestIsolationIndex.setText(
-                        lowest.city()
-                        + " (" + lowest.date() + ") -> "
-                        + lowest.index() + "%"
-                );
-            }
-            
+                        highestIsolationIndex.setText(
+                                highest.city()
+                                + " (" + highest.date() + ") -> "
+                                + highest.index() + "%"
+                        );
+                    });
+                }
+            });
+
+            Thread lowestThread = new Thread(() -> {
+
+                IsolationRecord lowest = db.findTheLowest(WHERE_TO_FIND);
+
+                if (lowest != null) {
+
+                    javax.swing.SwingUtilities.invokeLater(() -> {
+
+                        lowestIsolationIndex.setText(
+                                lowest.city()
+                                + " (" + lowest.date() + ") -> "
+                                + lowest.index() + "%"
+                        );
+                    });
+                }
+            });
+
+            highestThread.start();
+            lowestThread.start();
+
             logger.info("Consulta realizada com sucesso");
-            
+
         } catch (NumberFormatException e) {
-            logger.log(Level.WARNING,"Erro durante consulta de isolamento",e);
+            logger.log(Level.WARNING, "Erro durante consulta de isolamento", e);
             JOptionPane.showMessageDialog(
                     this,
                     e.getMessage(),
@@ -797,8 +813,6 @@ public class MainFrame extends javax.swing.JFrame {
                 new MainFrame().setVisible(true);
             }
         });
-        
-        
 
     }
 
