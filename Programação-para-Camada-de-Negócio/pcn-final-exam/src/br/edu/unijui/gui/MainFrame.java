@@ -619,7 +619,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jbRunSystemActionPerformed
 
     /**
-     * Permite selecionar os arquivos CSV que serão importados"
+     * Permite selecionar os arquivos CSV que serão importados, atividade 4
      */
     private void jbInputFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbInputFileButtonActionPerformed
 

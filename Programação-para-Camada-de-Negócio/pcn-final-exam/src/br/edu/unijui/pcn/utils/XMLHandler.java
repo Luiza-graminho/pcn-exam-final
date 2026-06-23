@@ -1,31 +1,13 @@
 package br.edu.unijui.pcn.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
+import java.io.*;
+import javax.xml.parsers.*;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
+import javax.xml.xpath.*;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,23 +15,12 @@ import java.util.logging.Logger;
 /**
  * Classe utilitária responsável por operações relacionadas 
  * à manipulação de documentos XML
- * 
- * Fornece métodos para:
- * - criação de documentos XML;
- * - leitura de arquivos XML;
- * - escrita de arquivos XML;
- * - conversão entre XML e String;
- * - execução de consultas XPath.
- * 
- * Todos os métodos são estáticos por se tratar de uma classe de apoio
- * sem necessidade de instanciação.
  *
- * @author Luiza Graminho e Isadora Beckmann
+ * @author Isadora Beckmann e Luiza Graminho
  */
 public class XMLHandler {
     
-    private static final Logger logger =
-        Logger.getLogger(XMLHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(XMLHandler.class.getName());
 
     /**
      * Criação de um novo documento XML vazio.
@@ -96,7 +67,7 @@ public class XMLHandler {
     }
 
     /**
-     * COnverte um documento XML para sua representação textual
+     * Converte um documento XML para sua representação textual
      * 
      * @return XML em formato String
     */

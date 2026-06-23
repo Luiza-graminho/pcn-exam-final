@@ -15,20 +15,15 @@ import java.util.logging.Logger;
 
 /**
  * Responsável pela leitura e importação dos arquivos CSV contendo os registros de isolamento social
- * 
  * A leitura é realizada de forma paralela utilizando múltiplas threads
- * 
  * @author Isadora Beckmann e Luiza Graminho
  */
 public class IsolationCSVImporter {
-
     private static final Logger logger = Logger.getLogger(IsolationCSVImporter.class.getName());
-    
+   
     // Realiza a leitura de um conjunto de arquivos CSV e retorna os registros encontrados
     public static List<IsolationRecord> load(File[] files) {
-        
         logger.log(Level.INFO, "Iniciando importacao de {0} arquivo(s).", files.length);
-        
         List<IsolationRecord> sharedRecords = Collections.synchronizedList(new ArrayList<>());
 
         if (files == null || files.length == 0) {
@@ -39,12 +34,10 @@ public class IsolationCSVImporter {
         logger.log(Level.INFO, "Pool de threads criado com {0} threads", numCores);
         
         ExecutorService executor = Executors.newFixedThreadPool(numCores);
-
         for (File file : files) {
             logger.log(Level.INFO, "Arquivo enviado para processamento: {0}", file.getName());
             executor.submit(() -> parseFile(file, sharedRecords));
         }
-
         executor.shutdown();
 
         try {
